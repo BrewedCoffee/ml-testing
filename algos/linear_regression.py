@@ -20,4 +20,5 @@ def process_data(df):
     plt.plot(x, y, 'r', label='fitted line')
     plt.show()
 
-process_data(Data.iris)
+data_manager = Data()
+process_data(data_manager.iris)

@@ -13,9 +13,9 @@ IRIS_NAMES = ['Sepal Length', 'Sepal Width', 'Petal Length', 'Petal Width', 'Cla
 
 class Data:
     def __init__(self):
-        self.iris = get_iris()
+        self.iris = self.get_iris()
 
-    def get_iris():
+    def get_iris(self):
         csv_data = io.StringIO(requests.get(IRIS_URL).content.decode())
         df = pd.read_csv(csv_data, names=IRIS_NAMES)
         return df
