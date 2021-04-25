@@ -3,7 +3,10 @@ from matplotlib import pyplot
 import numpy
 import pandas
 
-from sklearn import preprocessing
+import sklearn.preprocessing
+import sklearn.model_selection
+import sklearn.linear_model
+import sklearn.metrics
 import sklearn
 
 import data
@@ -18,7 +21,7 @@ class Algorithm:
 class Classifier(Algorithm):
     @staticmethod
     def encode_labels(data, col):
-        category_encoder = preprocessing.LabelEncoder()
+        category_encoder = sklearn.preprocessing.LabelEncoder()
         data_copy = data.copy()
         if isinstance(data, pandas.DataFrame):
             category_encoder.fit(data[col])
@@ -33,7 +36,7 @@ class Classifier(Algorithm):
         raise NotImplementedError
 
     @classmethod
-    def classify(cls):
+    def test(cls):
         raise NotImplementedError
 
 class LinearRegression(Algorithm):
@@ -59,18 +62,22 @@ class LogisticRegression(Classifier):
         iris_classes = (data.IRIS_CLASSES[0], data.IRIS_CLASSES[1])
         iris_dataframe = cls.data.iris.loc[cls.data.iris['Class'].isin(iris_classes)]
         iris_dataframe = Classifier.encode_labels(iris_dataframe, 'Class')
-        iris_data_array = iris_dataframe.to_numpy()
-        iris_data_array = Classifier.encode_labels(iris_data_array, -1)
-        print(iris_data_array)
+        train_dataframe, test_dataframe = sklearn.model_selection.train_test_split(iris_dataframe, train_size = 80, test_size = 20)
+        model = LogisticRegression.train(train_dataframe[data.IRIS_COLUMN_NAMES[:-1]], train_dataframe[data.IRIS_COLUMN_NAMES[-1]])
+        print(LogisticRegression.test(model, test_dataframe[data.IRIS_COLUMN_NAMES[:-1]], test_dataframe[data.IRIS_COLUMN_NAMES[-1]]))
 
     @staticmethod
-    def train(x, y):
-        print(x, y)
+    def train(train_x, train_y):
+        model = sklearn.linear_model.LogisticRegression()
+        return model.fit(train_x, train_y)
 
     @staticmethod
-    def classify(model, x):
-        pass
+    def test(model, test_x, test_y):
+        return f'{model.score(test_x, test_y)}\n{sklearn.metrics.confusion_matrix(test_y, model.predict(test_x))}\n{sklearn.metrics.classification_report(test_y, model.predict(test_x))}'
 
-LogisticRegression.on_iris()
+def main():
+    LogisticRegression.on_iris()
+    # LinearRegression.on_iris()
 
-LinearRegression.on_iris()
+if __name__ == '__main__':
+    main()
