@@ -17,6 +17,9 @@ def get_iris():
     with open(IRIS_PATH, 'wb') as f:
         f.write(response.content)
 
-def read_data():
-    headers = ["Sepal Length", "Sepal Width", "Petal Length", "Petal Width"]
-    return pd.read_csv('iris.csv',names=headers)
+def get_data():
+    headers = ["Sepal Length", "Sepal Width", "Petal Length", "Petal Width, Class"]
+    df = pd.read_csv('iris.csv',names=headers)
+
+def slice_data(df, headers=[]):
+    return df[headers]
