@@ -2,11 +2,17 @@ from scipy import stats
 from matplotlib import pyplot
 import numpy
 import pandas
+<<<<<<< HEAD
 
 import sklearn.preprocessing
 import sklearn.model_selection
 import sklearn.linear_model
 import sklearn.metrics
+=======
+import sklearn.linear_model as linear_model
+import sklearn.metrics as metrics
+from sklearn import preprocessing
+>>>>>>> 1cdfa228e4324d452bc8607f47af2e6ac15c2272
 import sklearn
 
 import data
@@ -75,9 +81,30 @@ class LogisticRegression(Classifier):
     def test(model, test_x, test_y):
         return f'{model.score(test_x, test_y)}\n{sklearn.metrics.confusion_matrix(test_y, model.predict(test_x))}\n{sklearn.metrics.classification_report(test_y, model.predict(test_x))}'
 
+
+class NaiveBayes(Classifier):
+    @classmethod
+    def test(self):
+        array = self.data.iris
+        X = array.iloc[:,1:5]
+        Y = array[:,5]
+
+        X_train, X_validation, Y_train, Y_validation = sklearn.model_selection.train_test_split(
+            X, Y, test_size=0.2, random_state=7
+        )
+
+        model = sklearn.naive_bayes.GaussianNB()
+        model.fit(X_train, Y_train)
+
+        for i in range(len(X_validation)):
+            print(model.predict(X_validation[i]))
+        # prob_predict = gnb.predict_proba(X_validation)[:, 1]
+        # sklearn.naive_bayes
+
 def main():
     LogisticRegression.on_iris()
-    # LinearRegression.on_iris()
+    LogisticRegression.on_iris()
+    LinearRegression.on_iris()
 
 if __name__ == '__main__':
     main()

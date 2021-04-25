@@ -50,3 +50,11 @@
 # References
 * [Algorithm List](https://www.analyticsvidhya.com/blog/2017/09/common-machine-learning-algorithms/)
 * [Step-By-Step](https://machinelearningmastery.com/machine-learning-in-python-step-by-step/)
+
+
+
+# Potential takeaways:
+* Accuracy
+* Speed
+* Which algorithms are better (and worse) for what
+* Personal preferences
