@@ -1,10 +1,10 @@
 from scipy import stats
 from matplotlib import pyplot
-import matplotlib.pyplot as pyplot
 import numpy
 import pandas
 import sklearn.linear_model as linear_model
 import sklearn.metrics as metrics
+from sklearn import preprocessing
 import sklearn
 
 import data
@@ -55,12 +55,6 @@ class LinearRegression(Algorithm):
         pyplot.show()
 
 class LogisticRegression(Classifier):
-    @staticmethod
-    def get_label_encoder(categories):
-        category_encoder = preprocessing.LabelEncoder()
-        category_encoder.fit(categories)
-        return category_encoder
-
     @classmethod
     def on_iris(cls):
         iris_classes = (data.IRIS_CLASSES[0], data.IRIS_CLASSES[1])
@@ -97,4 +91,7 @@ class NaiveBayes(Classifier):
         # prob_predict = gnb.predict_proba(X_validation)[:, 1]
         # sklearn.naive_bayes
 
-NaiveBayes.test()
+# NaiveBayes.test()
+LogisticRegression.on_iris()
+
+LinearRegression.on_iris()
