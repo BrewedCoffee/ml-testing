@@ -4,8 +4,6 @@ import io
 
 import pandas as pd
 
-DATA_PATH = 'data/'
-
 IRIS_URL = ('https://archive.ics.uci.edu/ml/'
             'machine-learning-databases/'
             'iris/iris.data')
