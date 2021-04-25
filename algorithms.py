@@ -3,9 +3,9 @@ from matplotlib import pyplot
 import matplotlib.pyplot as pyplot
 import numpy
 import pandas
-from sklearn import linear_model
-from sklearn import metrics
-from sklearn import preprocessing
+import sklearn.linear_model as linear_model
+import sklearn.metrics as metrics
+import sklearn
 
 import data
 
@@ -78,4 +78,23 @@ class LogisticRegression(Classifier):
     def classify(model, x):
         pass
 
-LogisticRegression.on_iris()
+class NaiveBayes(Classifier):
+    @classmethod
+    def test(self):
+        array = self.data.iris
+        X = array.iloc[:,1:5]
+        Y = array[:,5]
+
+        X_train, X_validation, Y_train, Y_validation = sklearn.model_selection.train_test_split(
+            X, Y, test_size=0.2, random_state=7
+        )
+
+        model = sklearn.naive_bayes.GaussianNB()
+        model.fit(X_train, Y_train)
+
+        for i in range(len(X_validation)):
+            print(model.predict(X_validation[i]))
+        # prob_predict = gnb.predict_proba(X_validation)[:, 1]
+        # sklearn.naive_bayes
+
+NaiveBayes.test()
