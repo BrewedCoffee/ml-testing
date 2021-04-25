@@ -18,12 +18,5 @@ def get_iris():
         f.write(response.content)
 
 def read_data():
-<<<<<<< HEAD
-    return pd.read_csv('iris.csv', names=["Sepal Length", "Sepal Width", "Petal Length", "Petal Width"])
-=======
-    df = pd.read_csv(IRIS_PATH)
-    return df
-    print(df.to_dict())
-
-read_data()
->>>>>>> 4e26b1381d6fb47e74616d625d3788ac5110eeea
+    headers = ["Sepal Length", "Sepal Width", "Petal Length", "Petal Width"]
+    return pd.read_csv('iris.csv',names=headers)
