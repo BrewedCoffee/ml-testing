@@ -7,9 +7,9 @@ IRIS_URL = ('https://archive.ics.uci.edu/ml/'
             'machine-learning-databases/'
             'iris/iris.data')
 DATA_PATH = 'data/'
+IRIS_PATH = DATA_PATH + 'iris.csv'
 
 def get_iris():
-    IRIS_PATH = DATA_PATH + 'iris.csv'
     if os.path.isfile(IRIS_PATH):
         return
     response = requests.get(IRIS_URL)
@@ -18,6 +18,8 @@ def get_iris():
         f.write(response.content)
 
 def read_data():
-    df = pd.read_csv('iris.csv')
+    df = pd.read_csv(IRIS_PATH)
     return df
     print(df.to_dict())
+
+read_data()
