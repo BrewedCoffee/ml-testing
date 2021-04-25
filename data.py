@@ -18,6 +18,4 @@ def get_iris():
         f.write(response.content)
 
 def read_data():
-    df = pd.read_csv('iris.csv')
-    return df
-    print(df.to_dict())
+    return pd.read_csv('iris.csv', names=["Sepal Length", "Sepal Width", "Petal Length", "Petal Width"])
