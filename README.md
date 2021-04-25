@@ -45,7 +45,7 @@
 
 # Data
 * Custom Datasets
-* [Iris Dataset](http://archive.ics.uci.edu/ml/datasets/Iris/)
+* [Iris Dataset](https://archive.ics.uci.edu/ml/machine-learning-databases/iris/)
 
 # References
 * [Algorithm List](https://www.analyticsvidhya.com/blog/2017/09/common-machine-learning-algorithms/)
