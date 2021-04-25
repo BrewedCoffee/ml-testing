@@ -1,6 +1,6 @@
 # Algorithms to Implement:
 ## Regerssion
-- [ ] Linear Regression
+- [x] Linear Regression
 - [ ] Logistic Regression
 ## Classification
 - [ ] SVM
