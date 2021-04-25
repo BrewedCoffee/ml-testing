@@ -20,13 +20,15 @@ class Classifier(Algorithm):
     @staticmethod
     def encode_labels(data, col):
         category_encoder = preprocessing.LabelEncoder()
+        data_copy = data.copy()
         if isinstance(data, pandas.DataFrame):
             category_encoder.fit(data[col])
-            data[col] = category_encoder.transform(data[:, col])
+            data_copy[col] = category_encoder.transform(data[col])
         elif isinstance(data, numpy.ndarray):
             category_encoder.fit(data[:, col])
-            data[:, col] = category_encoder.transform(data[:, col])
-        
+            data_copy[:, col] = category_encoder.transform(data[:, col])
+        return data_copy
+
     @classmethod
     def train(cls):
         raise NotImplementedError
@@ -63,8 +65,10 @@ class LogisticRegression(Classifier):
     def on_iris(cls):
         iris_classes = (data.IRIS_CLASSES[0], data.IRIS_CLASSES[1])
         iris_dataframe = cls.data.iris.loc[cls.data.iris['Class'].isin(iris_classes)]
+        iris_dataframe = Classifier.encode_labels(iris_dataframe, 'Class')
         iris_data_array = iris_dataframe.to_numpy()
-        Classifier.encode_labels(iris_data_array, -1)
+        iris_data_array = Classifier.encode_labels(iris_data_array, -1)
+        print(iris_data_array)
 
     @staticmethod
     def train(x, y):
