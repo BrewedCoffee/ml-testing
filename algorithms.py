@@ -1,14 +1,16 @@
-import scipy.stats as stats
+from scipy import stats
+from matplotlib import pyplot
 import matplotlib.pyplot as pyplot
 import numpy
 import pandas
-import sklearn.linear_model as linear_model
-import sklearn.metrics as metrics
+from sklearn import linear_model
+from sklearn import metrics
+from sklearn import preprocessing
 
-from data import Data
+import data
 
 class Algorithm:
-    data = Data()
+    data = data.Data()
 
     @classmethod
     def on_iris(cls):
@@ -42,11 +44,25 @@ class LinearRegression(Algorithm):
 
 class LogisticRegression(Classifier):
     @staticmethod
-    def train(data):
-        print(data)
+    def get_label_encoder(categories):
+        category_encoder = preprocessing.LabelEncoder()
+        category_encoder.fit(categories)
+        return category_encoder
+
+    @classmethod
+    def on_iris(cls):
+        iris_classes = (data.IRIS_CLASSES[0], data.IRIS_CLASSES[1])
+        iris_dataframe = cls.data.iris.loc[cls.data.iris['Class'].isin(iris_classes)]
+        iris_data_array = iris_dataframe.to_numpy()
+        label_encoder = LogisticRegression.get_label_encoder(numpy.asarray(iris_classes))
+        iris_data_array[:, -1] = label_encoder.transform(iris_data_array[:,-1])
 
     @staticmethod
-    def classify(model, data):
+    def train(x, y):
+        print(x, y)
+
+    @staticmethod
+    def classify(model, x):
         pass
 
-LinearRegression.on_iris()
+LogisticRegression.on_iris()
