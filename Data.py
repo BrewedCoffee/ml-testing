@@ -19,5 +19,4 @@ class Data:
         csv_data = io.StringIO(requests.get(IRIS_URL).content.decode())
         df = pd.read_csv(csv_data, names=IRIS_NAMES)
         return df
-
-print(Data.get_iris())
+        
