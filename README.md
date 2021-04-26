@@ -1,7 +1,7 @@
 # Algorithms to Implement:
 ## Regerssion
 - [x] Linear Regression
-- [ ] Logistic Regression
+- [x] Logistic Regression
 ## Classification
 - [ ] SVM
 - [ ] Naive Bayes
