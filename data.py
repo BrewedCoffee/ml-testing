@@ -10,11 +10,12 @@ def remove(original, element):
     copy.remove(element)
     return copy
 
-class ClassificationData:
+# Note: use instances to hold data instead of classes
+# so not all data is loaded when data.py is loaded
+
+class Data:
     URL = None
     COLUMN_LABELS = None
-    CLASSES = None
-    DEPENDENT_COLUMN = None
 
     @staticmethod
     def encode_columns(data, *args):
@@ -26,36 +27,44 @@ class ClassificationData:
         return data_copy
 
     @classmethod
-    def get_raw_data(cls):
-        response = requests.get(cls.URL).content.decode()
-        return pd.read_csv(io.StringIO(response), names=cls.COLUMN_LABELS)
-
-    @classmethod
     def encode(cls, data):
         raise NotImplementedError
 
-    def get_independent(self, data):
-        return data[remove(self.__class__.COLUMN_LABELS, self.__class__.DEPENDENT_COLUMN)]
-
-    def get_dependent(self, data):
-        return data[self.__class__.DEPENDENT_COLUMN]
+    @classmethod
+    def get_raw(cls):
+        response = requests.get(cls.URL).content.decode()
+        return pd.read_csv(io.StringIO(response), names=cls.COLUMN_LABELS)
 
     def __init__(self):
-        self.raw_data = self.get_raw_data()
-        self.encoded_data = self.__class__.encode(self.raw_data)
+        self.raw = self.get_raw()
+        self.encoded = self.encode(self.raw)
+
+class ClassificationData(Data):
+    CLASSES = None
+    DEPENDENT_COLUMN = 'class'
+
+    @classmethod
+    def get_independent(cls, data):
+        return data[remove(cls.COLUMN_LABELS, cls.DEPENDENT_COLUMN)]
+
+    @classmethod
+    def get_dependent(cls, data):
+        return data[cls.DEPENDENT_COLUMN]
+
+    def __init__(self):
+        super().__init__()
 
 class IrisData(ClassificationData):
     URL = 'https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data'
     COLUMN_LABELS = ['sepal length', 'sepal width', 'petal length', 'petal width', 'class']
     CLASSES = ['Iris-setosa', 'Iris-versicolor', 'Iris-virginica']
-    DEPENDENT_COLUMN = 'class'
 
     def __init__(self):
         super().__init__()
 
     @classmethod
     def encode(cls, data):
-        return ClassificationData.encode_columns(data, 'class')
+        return Data.encode_columns(data, 'class')
 
 class BreastCancerData(ClassificationData):
     URL = ('https://archive.ics.uci.edu/ml/machine-learning-databases'
@@ -63,18 +72,10 @@ class BreastCancerData(ClassificationData):
     COLUMN_LABELS = ['class', 'age', 'menopause', 'tumor-size', 'inv-nodes',
                      'node-caps', 'deg-malig', 'breast', 'breast-quad', 'irradiat']
     CLASSES = ['no-recurrence-events', 'recurrence-events']
-    DEPENDENT_COLUMN = 'class'
 
     def __init__(self):
         super().__init__()
 
     @classmethod
     def encode(cls, data):
-        return ClassificationData.encode_columns(data, *cls.COLUMN_LABELS)
-
-def main():
-    iris = IrisData()
-    print(iris.encoded_dependent)
-
-if __name__ == '__main__':
-    main()
+        return Data.encode_columns(data, *cls.COLUMN_LABELS)
