@@ -5,15 +5,13 @@ import io
 import zipfile
 import sklearn.preprocessing
 import shutil
+import datetime
 
 import pandas as pd
 
-DATA_DIR = 'data'
+import utils
 
-def remove(original, element):
-    copy = original.copy()
-    copy.remove(element)
-    return copy
+DATA_DIR = 'data'
 
 # Note: use instances to hold data instead of classes
 # so not all data is loaded when data.py is loaded
@@ -55,11 +53,11 @@ class ClassificationData(Data):
     DEPENDENT_COLUMN = 'class'
 
     @classmethod
-    def get_independent(cls, data):
-        return data[remove(cls.COLUMN_LABELS, cls.DEPENDENT_COLUMN)]
+    def independent(cls, data):
+        return data[utils.remove_element(cls.COLUMN_LABELS, cls.DEPENDENT_COLUMN)]
 
     @classmethod
-    def get_dependent(cls, data):
+    def dependent(cls, data):
         return data[cls.DEPENDENT_COLUMN]
 
     def __init__(self):
@@ -75,14 +73,16 @@ class AirQualityData(Data):
     def get_raw(cls):
         data_file_path = f'{DATA_DIR}/{cls.__name__}.csv'
         if os.path.isfile(data_file_path):
-            return pd.read_csv(data_file_path, names=cls.COLUMN_LABELS)
+            return pd.read_csv(data_file_path, parse_dates=[0])
         os.makedirs(DATA_DIR, exist_ok=True)
         response = requests.get(cls.URL)
         with open('temp.zip', 'wb') as zip_file:
             zip_file.write(response.content)
         with zipfile.ZipFile('temp.zip') as zip_file:
             zip_file.extractall('tempdir')
-        dataframe = pd.read_excel('tempdir/AirQualityUCI.xlsx', skiprows=0, names=cls.COLUMN_LABELS, usecols=cls.COLUMN_LABELS, parse_dates={'timestamp': [0, 1]})
+        dataframe = pd.read_excel(
+            'tempdir/AirQualityUCI.xlsx', skiprows=0, names=cls.COLUMN_LABELS,
+            usecols=cls.COLUMN_LABELS, parse_dates={'timestamp': [0, 1]})
         dataframe.to_csv(f'{DATA_DIR}/{cls.__name__}.csv', index=False)
         os.remove('temp.zip')
         shutil.rmtree('tempdir')
