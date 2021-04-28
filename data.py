@@ -1,9 +1,12 @@
+import csv
 import requests
 import os
 import io
 import sklearn.preprocessing
 
 import pandas as pd
+
+DATA_DIR = 'data'
 
 def remove(original, element):
     copy = original.copy()
@@ -32,8 +35,14 @@ class Data:
 
     @classmethod
     def get_raw(cls):
-        response = requests.get(cls.URL).content.decode()
-        return pd.read_csv(io.StringIO(response), names=cls.COLUMN_LABELS)
+        os.makedirs(DATA_DIR, exist_ok=True)
+        data_file_path = f'{DATA_DIR}/{cls.__name__}.csv'
+        if os.path.isfile(data_file_path):
+            return pd.read_csv(data_file_path, names=cls.COLUMN_LABELS)
+        csv_string = requests.get(cls.URL).content.decode()
+        with open(data_file_path, 'w') as data_file:
+            data_file.write(csv_string)
+        return pd.read_csv(io.StringIO(csv_string), names=cls.COLUMN_LABELS)
 
     def __init__(self):
         self.raw = self.get_raw()

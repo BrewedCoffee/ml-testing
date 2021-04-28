@@ -17,6 +17,10 @@ class Algorithm:
     @classmethod
     def on_iris(cls):
         raise NotImplementedError
+    
+    @classmethod
+    def on_data(cls, data, **kwargs):
+        raise NotImplementedError
 
 class Classifier(Algorithm):
     @staticmethod
@@ -47,6 +51,14 @@ class LinearRegression(Algorithm):
             cls.data.iris['Sepal Width'].to_list())
 
     @staticmethod
+    def on_data(data, columns):
+        return LinearRegression.fit_n(data.encoded, columns)
+
+    @staticmethod
+    def fit_n(data, columns):
+        pass
+
+    @staticmethod
     def fit(x, y):
         result = stats.linregress(x, y)
         print(f"R-squared: {result.rvalue**2:.6f}")
@@ -57,37 +69,15 @@ class LinearRegression(Algorithm):
         pyplot.show()
 
 class LogisticRegression(Classifier):
-    @classmethod
-    def on_iris(cls):
-        # iris_classes = (data.IRIS_CLASSES[0], data.IRIS_CLASSES[1])
-        # iris_dataframe = cls.data.iris.loc[cls.data.iris['Class'].isin(iris_classes)]
-        # iris_dataframe = Classifier.encode_labels(iris_dataframe, 'Class')
-        # train_dataframe, test_dataframe = sklearn.model_selection.train_test_split(iris_dataframe, train_size = 80, test_size = 20)
-        # model = LogisticRegression.train(train_dataframe[data.IRIS_COLUMN_NAMES[:-1]], train_dataframe[data.IRIS_COLUMN_NAMES[-1]])
-        # print(LogisticRegression.test(model, test_dataframe[data.IRIS_COLUMN_NAMES[:-1]], test_dataframe[data.IRIS_COLUMN_NAMES[-1]]))
-        iris_dataframe = Classifier.encode_labels(cls.data.iris, 'Class')
-        train_dataframe, test_dataframe = sklearn.model_selection.train_test_split(iris_dataframe, train_size = 80, test_size = 20)
-        model = LogisticRegression.train(train_dataframe[data.IRIS_COLUMN_NAMES[:-1]], train_dataframe[data.IRIS_COLUMN_NAMES[-1]])
-        print(LogisticRegression.test(model, test_dataframe[data.IRIS_COLUMN_NAMES[:-1]], test_dataframe[data.IRIS_COLUMN_NAMES[-1]]))
-    
-    @classmethod
-    def on_cancer(cls):
-        cancer_dataframe = cls.data.cancer
-        for column_name in data.CANCER_COLUMN_NAMES:
-            cancer_dataframe = Classifier.encode_labels(cancer_dataframe, column_name)
-        train_dataframe, test_dataframe = sklearn.model_selection.train_test_split(cancer_dataframe, train_size=228, test_size=57)
-        model = LogisticRegression.train(train_dataframe[data.CANCER_COLUMN_NAMES[1:]], train_dataframe[data.CANCER_COLUMN_NAMES[0]])
-        print(LogisticRegression.test(model, test_dataframe[data.CANCER_COLUMN_NAMES[1:]], test_dataframe[data.CANCER_COLUMN_NAMES[0]]))
-
-    @classmethod
-    def on_classification_data(cls, data: data.ClassificationData):
-        train_data, test_data = sklearn.model_selection.train_test_split(data.encoded_data)
-        model = LogisticRegression.train(data.get_independent(train_data), data.get_dependent(train_data))
+    @staticmethod
+    def on_data(data: data.ClassificationData, multi_class='auto', solver='lbfgs'):
+        train_data, test_data = sklearn.model_selection.train_test_split(data.encoded)
+        model = LogisticRegression.train(data.get_independent(train_data), data.get_dependent(train_data), multi_class, solver)
         print(LogisticRegression.test(model, data.get_independent(test_data), data.get_dependent(test_data)))
 
     @staticmethod
-    def train(train_x, train_y):
-        model = sklearn.linear_model.LogisticRegression(multi_class='multinomial', solver='newton-cg')
+    def train(train_x, train_y, multi_class, solver):
+        model = sklearn.linear_model.LogisticRegression(multi_class=multi_class, solver=solver)
         return model.fit(train_x, train_y)
 
     @staticmethod
@@ -116,7 +106,8 @@ class NaiveBayes(Classifier):
 
 def main():
     # LogisticRegression.on_iris()
-    LogisticRegression.on_classification_data(data.IrisData())
+    LogisticRegression.on_data(data.IrisData())
+    # LinearRegression.on_data(data.)
     # LinearRegression.on_iris()
 
 if __name__ == '__main__':
